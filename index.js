@@ -5,10 +5,10 @@
 import App from './App';
 import {Navigation} from 'react-native-navigation';
 import Buttons from './components/buttons/Buttons';
-import Main from './components/Main';
-import Login from './components/Login';
-import Register from './components/Register';
-import Chat from './components/Chat';
+import Main from './screens/Main';
+import Login from './screens/Login';
+import Register from './screens/Register';
+import Chat from './screens/Chat';
 
 Navigation.registerComponent('Home', () => App);
 Navigation.registerComponent('Main', () => Main);
