@@ -1,7 +1,8 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, Alert} from 'react-native';
 import {Button, Input} from 'react-native-elements';
 import {Navigation} from 'react-native-navigation';
+import { Root, Popup } from 'popup-ui'
 export default class Register extends React.Component {
     constructor(props) {
         super(props);
@@ -13,9 +14,61 @@ export default class Register extends React.Component {
         };
 
     }
+    async register() {
+        await fetch('http://192.168.1.110:8080/registration', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                login:  this.state.login,
+                password: this.state.password,
+                email: this.state.email
+            })
+        }).then(function response(response){
+            console.log(response.status);
+            if(response.status === 404){
+                Popup.show({
+                    type: 'Danger',
+                    title: 'Registration failed!',
+                    button: false,
+                    textBody: 'Something went wrong, check your password, login may be already in use.',
+                    buttontext: 'Try again.',
+                    callback: () => Popup.hide()
+                })
+            }
+            if(response.status === 500){
+                Popup.show({
+                    type: 'Danger',
+                    title: 'Server Connection!',
+                    button: false,
+                    textBody: 'There is problem with server connection, try again later.',
+                    buttontext: 'Try again.',
+                    callback: () => {
+                        Popup.hide()
+                    }
+                })
+            }
+            if(response.status === 200){
+                Popup.show({
+                    type: 'Success',
+                    title: 'Registration complete!',
+                    button: false,
+                    textBody: 'You have made your account successfully!',
+                    buttontext: 'Go to login!',
+                    callback: () => {
+                        Popup.hide()
+                        Navigation.pop('MAIN_STACK');
+                    }
+                })
+            }
+        });
+    }
 
     render() {
         return (
+            <Root>
             <View style={styles.body}>
                 <View style={styles.top}>
                     <Text style={{fontSize: 50, color: 'white'}}>Chat</Text>
@@ -54,12 +107,9 @@ export default class Register extends React.Component {
                             onChangeText={value => this.setState({rePassword: value})}
                         />
                         <Button
-                            onPress={()=>{
-                                console.log("Login: " + this.state.login);
-                                console.log("Email: " + this.state.email);
-                                console.log("Password: " + this.state.password);
-                                console.log("RePassword: " + this.state.rePassword);
-                            }}
+                            onPress={()=>
+                                this.register()
+                            }
                             title="Register Now!"
                             type="outline"
                             containerStyle={{flex: 0.5, width: '50%', color: 'black'}}
@@ -69,6 +119,7 @@ export default class Register extends React.Component {
                     </View>
                 </View>
             </View>
+            </Root>
         );
     }
 }

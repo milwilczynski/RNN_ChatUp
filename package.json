@@ -10,11 +10,16 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-community/async-storage": "^1.11.0",
+    "popup-ui": "^1.0.10",
     "react": "16.11.0",
     "react-native": "0.62.2",
     "react-native-elements": "^2.0.1",
     "react-native-navigation": "^6.7.1",
-    "react-native-vector-icons": "^6.6.0"
+    "react-native-vector-icons": "^6.6.0",
+    "sockjs": "^0.3.20",
+    "sockjs-client": "^1.4.0",
+    "stompjs": "^2.3.3"
   },
   "devDependencies": {
     "@babel/core": "^7.10.2",
