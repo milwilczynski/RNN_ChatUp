@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, FlatList, StyleSheet, Text } from 'react-native';
-import User from './User';
+import Message from './Message';
 
 const styles = StyleSheet.create({
     container: {
@@ -9,20 +9,19 @@ const styles = StyleSheet.create({
 });
 
 
-const UserList = ({ itemList }) => (
+const MessageList = ({ itemList }) => (
     <View style={styles.container}>
         <FlatList
             data={itemList}
             renderItem={
                 ({item}) =>
-                <User
-                    title={item.title}
-                    image_url={item.image_url}
-                />
+                    <Message
+                        title={item.title}
+                        message={item.message}
+                    />
             }
         />
-
     </View>
 );
 
-export default UserList;
+export default MessageList;

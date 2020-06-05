@@ -10,7 +10,7 @@ export default class Chat extends React.Component {
 
     render() {
         return (
-            <View>
+            <View style={styles.body}>
                 <Text>Screen Chat</Text>
             </View>
         );
