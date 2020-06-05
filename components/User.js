@@ -36,8 +36,10 @@ const styles = StyleSheet.create({
 const User = ({ title, image_url }) => (
     <TouchableOpacity>
         <View style={styles.container}>
-                <Image source={{ uri: image_url }} style={styles.photo} />
-                    <View style={styles.container_text}>
+                <Image
+                    source={{ uri: image_url }}
+                    style={styles.photo} />
+                 <View style={styles.container_text}>
                     <Text style={styles.title}>
                     {title}
                     </Text>

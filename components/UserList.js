@@ -13,11 +13,13 @@ const UserList = ({ itemList }) => (
     <View style={styles.container}>
         <FlatList
             data={itemList}
-            renderItem={({ item }) => <User
-                title={item.title}
-                description={item.description}
-                image_url={item.image_url}
-            />}
+            renderItem={
+                ({item}) =>
+                <User
+                    title={item.title}
+                    image_url={item.image_url}
+                />
+            }
         />
 
     </View>

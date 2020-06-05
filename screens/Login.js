@@ -20,7 +20,21 @@ export default class Login extends React.Component {
             password: 'urkek123',
         };
     }
+    componentDidMount() {
+    }
 
+    goToMain = async() => {
+        Navigation.push(this.props.componentId, {
+            component: {
+                name: 'Main',
+                options: {
+                    topBar: {
+                        visible: true
+                    },
+                },
+            },
+        }).then();
+    };
     async login() {
         try {
             await fetch('http://192.168.1.110:8080/login', {
@@ -34,7 +48,7 @@ export default class Login extends React.Component {
                     password: this.state.password,
                 }),
             }).then(response => {
-                console.log(response.status)
+                console.log("Status: " + response.status);
                 if (response.status === 401) {
                     Popup.show({
                         type: 'Danger',
@@ -62,21 +76,10 @@ export default class Login extends React.Component {
                 }
             })
                 .then((responseData) => {
-                    Store._storeData(responseData.token);
+                    Store._storeData(responseData.token)
+                        .then(this.goToMain());
                 })
-                .then(function () {
-                        Navigation.push('MAIN_STACK', {
-                            component: {
-                                name: 'Main',
-                                options: {
-                                    topBar: {
-                                        visible: true,
-                                    },
-                                },
-                            },
-                        });
-                    },
-                );
+
         } catch (error) {
             //console.log(error);
         }

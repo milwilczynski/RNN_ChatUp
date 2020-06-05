@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage';
 
 export class Store {
+
   static _storeData = async (data) => {
     try {
       await AsyncStorage.setItem('@Token', data);
@@ -8,6 +9,7 @@ export class Store {
       console.log(error);
     }
   };
+
   static _retrieveData = async () => {
     try {
       const value = await AsyncStorage.getItem('@Token');

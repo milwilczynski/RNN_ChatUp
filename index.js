@@ -9,12 +9,14 @@ import Main from './screens/Main';
 import Login from './screens/Login';
 import Register from './screens/Register';
 import Chat from './screens/Chat';
+import AddFriend from './screens/AddFriend';
 
 Navigation.registerComponent('Home', () => App);
 Navigation.registerComponent('Main', () => Main);
 Navigation.registerComponent('Login', () => Login);
 Navigation.registerComponent('Register', () => Register);
 Navigation.registerComponent('Chat', () => Chat);
+Navigation.registerComponent('AddFriend', () => AddFriend);
 Navigation.registerComponent('Buttons', () => Buttons);
 Navigation.events().registerAppLaunchedListener(() => {
   Navigation.setDefaultOptions({
@@ -44,8 +46,6 @@ Navigation.events().registerAppLaunchedListener(() => {
 
   Navigation.setRoot({
     root: {
-      sideMenu: {
-        center: {
           stack: {
             id: 'MAIN_STACK',
             children: [
@@ -57,9 +57,10 @@ Navigation.events().registerAppLaunchedListener(() => {
               },
             ],
           },
-        },
-      },
     },
   }).then()
 
+  Navigation.events().registerCommandListener((name, params) => {
+    console.log(params.layout.data.passProps) // always undefined
+  });
 });
