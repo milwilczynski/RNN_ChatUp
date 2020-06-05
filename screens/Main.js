@@ -12,7 +12,8 @@ export default class Main extends React.Component {
         super(props);
         this.state = {
             token: '',
-            friends: [],
+            friends: null,
+            render: [],
         };
         this._getToken().then();
     }
@@ -45,19 +46,21 @@ export default class Main extends React.Component {
                 },
             })
                 .then(response => response.json())
-                .then(await function (response) {
+                .then(response => {
                     this.setState({
-                      friends: response
+                        friends: response
                     })
-                });
+                    if(this.state.friends !== null){
+                        this.getData(this.state.friends);
+                    }
+                })
         } catch (error) {
             //console.log(error);
         }
     }
 
-    getData() {
-        /*
-        let friendsArray = this.props.friends;
+    getData = async (friends) => {
+        let friendsArray = friends.friends;
         let friendList = friendsArray.slice(0, friendsArray.length);
         let dataArray = [];
         let i = 0;
@@ -72,22 +75,17 @@ export default class Main extends React.Component {
                 i++;
             },
         );
-                 */
-        return [{
-            key: '1',
-            title: 'kekru',
-            image_url: 'http://3.bp.blogspot.com/-jd5x3rFRLJc/VngrSWSHcjI/AAAAAAAAGJ4/ORPqZNDpQoY/s1600/Profile%2Bcircle.png',
-        }];
+        this.setState({
+            render: dataArray
+        })
 
     }
 
     render() {
+
         return (
             <View style={styles.body}>
-                <TouchableOpacity onPress={()=>this._getFriends()}>
-                    <Text>KURWA</Text>
-                </TouchableOpacity>
-                <UserList itemList={this.getData()}/>
+                <UserList itemList={this.state.render}/>
             </View>
         );
     }
