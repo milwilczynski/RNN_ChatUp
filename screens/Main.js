@@ -5,7 +5,6 @@ import {
 } from 'react-native';
 import Store from './../store/Store';
 import SockJS from 'sockjs-client';
-import AsyncStorage from '@react-native-community/async-storage';
 import MessageStore from '../store/MessageStore';
 import {Input} from 'react-native-elements';
 
@@ -33,12 +32,10 @@ export default class Main extends React.Component {
     componentDidMount() {
         try {
             this.interval = setInterval(() => {
-                console.log("state: " + this.state.messages);
-                console.log("storage: " + Main.msgStore.getMessage());
                 if(this.state.messages != Main.msgStore.getMessage()) {
                     this.setState({
                         messages: Main.msgStore.getMessage(),
-                        arrayOfMsg: this.state.arrayOfMsg + Main.msgStore.getMessage()
+                        arrayOfMsg: this.state.arrayOfMsg + '\n' + Main.msgStore.getSender() +': ' + Main.msgStore.getMessage()
                     })
                 }
                 }, 1000);
@@ -59,8 +56,8 @@ export default class Main extends React.Component {
                 console.log('connected to: ' + frame);
                 stompClient.subscribe('/topic/messages/' + login, function (response) {
                     let data = JSON.parse(response.body);
-                    //AsyncStorage.setItem('wiad', data.fromLogin + ": " + data.message);
-                    Main.msgStore.setMessage(data.fromLogin + ": " + data.message);
+                    Main.msgStore.setMessage(data.message);
+                    Main.msgStore.setSender(data.fromLogin);
                 });
             });
         } catch (err) {
@@ -74,7 +71,7 @@ export default class Main extends React.Component {
             message: text,
         }));
         this.setState({
-            arrayOfMsg: this.state.arrayOfMsg + this.state.login + ': ' + text,
+            arrayOfMsg: this.state.arrayOfMsg + '\n' + this.state.login + ': ' + text,
         });
     }
 
@@ -151,10 +148,14 @@ export default class Main extends React.Component {
     };
 
     _friendNameOnClick(friend) {
+        if(friend != this.state.lastSender){
+            this.setState({
+                arrayOfMsg: ' '
+            })
+        }
         this.setState({
             chosenFriend: friend,
         });
-        console.log(this.state.chosenFriend);
     }
 
     render() {
