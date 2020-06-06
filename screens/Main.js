@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import Store from './../store/Store';
 import SockJS from 'sockjs-client';
+import AsyncStorage from '@react-native-community/async-storage';
 
 var stompClient = require('stompjs/lib/stomp').Stomp;
 
@@ -16,28 +17,53 @@ export default class Main extends React.Component {
             friends: null,
             login: this.props.login,
             render: [],
+            messages: '',
             chosenFriend: 'A nice friend! :)',
-            messages: [],
             url: 'http://192.168.1.110:8080',
         };
         this._getToken().then();
     }
 
     componentDidMount() {
-
+        try {
+                this.interval = setInterval(() =>
+                    Main._retrieveData()
+                    , 1000);
+        }catch(err){
+            //
+        }
     }
 
+    componentWillUnmount() {
+        clearInterval(this.interval);
+    }
+
+    static _retrieveData = async () => {
+        try {
+            const value = await AsyncStorage.getItem('wiad');
+            console.log(value);
+            if (value !== null) {
+                return value;
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     _connectToChat = async (login) => {
-        let socket = new SockJS(this.state.url + '/chat');
-        stompClient = Stomp.over(socket);
-        stompClient.connect({}, function (frame) {
-            console.log('connected to: ' + frame);
-            stompClient.subscribe('/topic/messages/' + login, function (response) {
-                let data = JSON.parse(response.body);
-                console.log(data.fromLogin);
-                console.log(data.message);
+        try {
+            let socket = new SockJS(this.state.url + '/chat');
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function (frame) {
+                console.log('connected to: ' + frame);
+                stompClient.subscribe('/topic/messages/' + login, function (response) {
+                    let data = JSON.parse(response.body);
+                    AsyncStorage.setItem('wiad', data.fromLogin + ": " + data.message);
+                });
             });
-        });
+        } catch (err) {
+            //
+        }
     };
 
     sendMsg(to, text) {
@@ -45,6 +71,9 @@ export default class Main extends React.Component {
             fromLogin: this.state.login,
             message: text,
         }));
+        this.setState({
+            messages: this.state.messages + this.state.login + ': ' + text,
+        });
     }
 
     _getToken = async () => {
@@ -95,7 +124,7 @@ export default class Main extends React.Component {
         friendList.forEach(friend => {
                 dataArray.push
                 (
-                    <TouchableOpacity key={i.toString()} onPress={()=>this._friendNameOnClick(friend)}>
+                    <TouchableOpacity key={i.toString()} onPress={() => this._friendNameOnClick(friend)}>
                         <View style={styles.container2}>
                             <Image
                                 source={{uri: 'http://3.bp.blogspot.com/-jd5x3rFRLJc/VngrSWSHcjI/AAAAAAAAGJ4/ORPqZNDpQoY/s1600/Profile%2Bcircle.png'}}
@@ -127,7 +156,6 @@ export default class Main extends React.Component {
     }
 
     render() {
-
         return (
             <View style={styles.body}>
                 <View style={styles.topContainer}>
@@ -136,13 +164,14 @@ export default class Main extends React.Component {
                     </ScrollView>
                 </View>
                 <View style={styles.middleContainer}>
-                   <Text style={styles.title}>{this.state.chosenFriend}</Text>
+                    <Text style={styles.title}>{this.state.chosenFriend}</Text>
                 </View>
                 <ScrollView style={styles.bottomContainer}>
-                    <TouchableOpacity onPress={() => this.sendMsg(this.state.chosenFriend, "no siema mordo")}>
+                    <Text>{this.state.messages}</Text>
+                    <TouchableOpacity onPress={() => this.sendMsg(this.state.chosenFriend, 'no siema mordo')}>
                         <Text>WYSLIJ</Text>
                     </TouchableOpacity>
-                </ScrollView >
+                </ScrollView>
             </View>
         );
     }
@@ -154,26 +183,26 @@ const styles = StyleSheet.create({
         backgroundColor: '#222831',
         flex: 1,
     },
-    topContainer:{
-      flex: 0.5
+    topContainer: {
+        flex: 0.5,
     },
-    middleContainer:{
+    middleContainer: {
         flex: 0.1,
         alignItems: 'center',
         justifyContent: 'center',
         borderTopWidth: 1,
         borderBottomWidth: 1,
-        borderColor: 'white'
+        borderColor: 'white',
     },
-    bottomContainer:{
-        flex: 0.4
+    bottomContainer: {
+        flex: 0.4,
     },
     container2: {
         flex: 1,
         flexDirection: 'row',
         padding: 5,
-        marginLeft:16,
-        marginRight:16,
+        marginLeft: 16,
+        marginRight: 16,
         marginTop: 8,
         marginBottom: 8,
         borderColor: '#cceabb',
