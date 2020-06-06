@@ -6,6 +6,7 @@ import {
 import Store from './../store/Store';
 import SockJS from 'sockjs-client';
 import AsyncStorage from '@react-native-community/async-storage';
+import MessageStore from '../store/MessageStore';
 
 var stompClient = require('stompjs/lib/stomp').Stomp;
 
@@ -20,16 +21,24 @@ export default class Main extends React.Component {
             messages: '',
             chosenFriend: 'A nice friend! :)',
             url: 'http://192.168.1.110:8080',
+
         };
         this._getToken().then();
     }
+    static msgStore = new MessageStore();
 
     componentDidMount() {
         try {
-                this.interval = setInterval(() =>
-                    Main._retrieveData()
-                    , 1000);
-        }catch(err){
+            this.interval = setInterval(() => {
+                console.log("state: " + this.state.messages);
+                console.log("storage: " + Main.msgStore.getMessage());
+                if(this.state.messages != Main.msgStore.getMessage()) {
+                    this.setState({
+                        messages: this.state.messages + Main.msgStore.getMessage()
+                    })
+                }
+                }, 1000);
+        } catch (err) {
             //
         }
     }
@@ -58,7 +67,8 @@ export default class Main extends React.Component {
                 console.log('connected to: ' + frame);
                 stompClient.subscribe('/topic/messages/' + login, function (response) {
                     let data = JSON.parse(response.body);
-                    AsyncStorage.setItem('wiad', data.fromLogin + ": " + data.message);
+                    //AsyncStorage.setItem('wiad', data.fromLogin + ": " + data.message);
+                    Main.msgStore.setMessage(data.fromLogin + ": " + data.message);
                 });
             });
         } catch (err) {
