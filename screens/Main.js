@@ -7,6 +7,7 @@ import Store from './../store/Store';
 import SockJS from 'sockjs-client';
 import AsyncStorage from '@react-native-community/async-storage';
 import MessageStore from '../store/MessageStore';
+import {Input} from 'react-native-elements';
 
 var stompClient = require('stompjs/lib/stomp').Stomp;
 
@@ -19,6 +20,9 @@ export default class Main extends React.Component {
             login: this.props.login,
             render: [],
             messages: '',
+            arrayOfMsg: '',
+            lastSender: '',
+            msgToSend: '',
             chosenFriend: 'A nice friend! :)',
             url: 'http://192.168.1.110:8080',
 
@@ -26,7 +30,6 @@ export default class Main extends React.Component {
         this._getToken().then();
     }
     static msgStore = new MessageStore();
-
     componentDidMount() {
         try {
             this.interval = setInterval(() => {
@@ -34,7 +37,8 @@ export default class Main extends React.Component {
                 console.log("storage: " + Main.msgStore.getMessage());
                 if(this.state.messages != Main.msgStore.getMessage()) {
                     this.setState({
-                        messages: this.state.messages + Main.msgStore.getMessage()
+                        messages: Main.msgStore.getMessage(),
+                        arrayOfMsg: this.state.arrayOfMsg + Main.msgStore.getMessage()
                     })
                 }
                 }, 1000);
@@ -46,18 +50,6 @@ export default class Main extends React.Component {
     componentWillUnmount() {
         clearInterval(this.interval);
     }
-
-    static _retrieveData = async () => {
-        try {
-            const value = await AsyncStorage.getItem('wiad');
-            console.log(value);
-            if (value !== null) {
-                return value;
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    };
 
     _connectToChat = async (login) => {
         try {
@@ -82,7 +74,7 @@ export default class Main extends React.Component {
             message: text,
         }));
         this.setState({
-            messages: this.state.messages + this.state.login + ': ' + text,
+            arrayOfMsg: this.state.arrayOfMsg + this.state.login + ': ' + text,
         });
     }
 
@@ -177,10 +169,16 @@ export default class Main extends React.Component {
                     <Text style={styles.title}>{this.state.chosenFriend}</Text>
                 </View>
                 <ScrollView style={styles.bottomContainer}>
-                    <Text>{this.state.messages}</Text>
-                    <TouchableOpacity onPress={() => this.sendMsg(this.state.chosenFriend, 'no siema mordo')}>
+                    <Text>{this.state.arrayOfMsg}</Text>
+                    <TouchableOpacity onPress={() => this.sendMsg(this.state.chosenFriend, this.state.msgToSend)}>
                         <Text>WYSLIJ</Text>
                     </TouchableOpacity>
+                    <Input
+                        placeholder="Message"
+                        placeholderTextColor="white"
+                        inputStyle={{color: 'white'}}
+                        onChangeText={(value) => this.setState({msgToSend: value})}
+                    />
                 </ScrollView>
             </View>
         );

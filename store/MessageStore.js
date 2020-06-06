@@ -1,6 +1,7 @@
 export class MessageStore {
      constructor() {
         this.messages = '';
+        this.sender = '';
     }
 
     setMessage(msg){
@@ -11,6 +12,13 @@ export class MessageStore {
         return this.messages;
     }
 
+    setSender(sender){
+         this.sender = sender;
+
+    }
+    getSender(){
+         return this.sender;
+    }
 }
 
 export default MessageStore;
