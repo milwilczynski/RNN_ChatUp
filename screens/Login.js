@@ -27,6 +27,9 @@ export default class Login extends React.Component {
         Navigation.push(this.props.componentId, {
             component: {
                 name: 'Main',
+                passProps: {
+                    login: this.state.login
+                },
                 options: {
                     topBar: {
                         visible: true
