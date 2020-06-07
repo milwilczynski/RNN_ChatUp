@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import {Navigation} from 'react-native-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome';
-//<Image source={require('./../../android/app/src/main/res/mipmap-hdpi/ic_launcher_round.png')}/>
 function goTo(screen){
     Navigation.push('MAIN_STACK', {
         component: {
@@ -28,13 +27,6 @@ const Buttons: () => React$Node = () => {
 
     return (
         <View style={styles.body}>
-            <View style={styles.button}>
-                <TouchableOpacity onPress={() => {
-                    goTo('Chat')
-                }}>
-                    <Icon name='comments' color='white' size={20}/>
-                </TouchableOpacity>
-            </View>
             <View style={styles.button}>
                 <TouchableOpacity  onPress={() => {
                     goTo('AddFriend')

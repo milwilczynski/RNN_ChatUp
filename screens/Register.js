@@ -59,7 +59,6 @@ export default class Register extends React.Component {
                     buttontext: 'Go to login!',
                     callback: () => {
                         Popup.hide()
-                        Navigation.pop('MAIN_STACK');
                     }
                 })
             }

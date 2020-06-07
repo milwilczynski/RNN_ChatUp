@@ -22,7 +22,7 @@ export default class Main extends React.Component {
             arrayOfMsg: '',
             lastSender: '',
             msgToSend: '',
-            chosenFriend: 'A nice friend! :)',
+            chosenFriend: '',
             url: 'http://192.168.1.110:8080',
 
         };
@@ -126,7 +126,7 @@ export default class Main extends React.Component {
                     <TouchableOpacity key={i.toString()} onPress={() => this._friendNameOnClick(friend)}>
                         <View style={styles.container2}>
                             <Image
-                                source={{uri: 'http://3.bp.blogspot.com/-jd5x3rFRLJc/VngrSWSHcjI/AAAAAAAAGJ4/ORPqZNDpQoY/s1600/Profile%2Bcircle.png'}}
+                                source={{uri: 'https://www.drupal.org/files/issues/default-avatar.png'}}
                                 style={styles.photo}/>
                             <View style={styles.container_text}>
                                 <Text style={styles.title}>
@@ -169,18 +169,20 @@ export default class Main extends React.Component {
                 <View style={styles.middleContainer}>
                     <Text style={styles.title}>{this.state.chosenFriend}</Text>
                 </View>
-                <ScrollView style={styles.bottomContainer}>
-                    <Text>{this.state.arrayOfMsg}</Text>
-                    <TouchableOpacity onPress={() => this.sendMsg(this.state.chosenFriend, this.state.msgToSend)}>
-                        <Text>WYSLIJ</Text>
-                    </TouchableOpacity>
+                <View style={styles.bottomContainer}>
+                <ScrollView >
+                    <Text style={{color: 'white', fontSize: 16}}>{this.state.arrayOfMsg}</Text>
+                </ScrollView>
+                </View>
+                <View style={{}}>
                     <Input
                         placeholder="Message"
                         placeholderTextColor="white"
-                        inputStyle={{color: 'white'}}
+                        inputStyle={{color: 'white', fontSize: 12}}
                         onChangeText={(value) => this.setState({msgToSend: value})}
+                        onSubmitEditing={() => this.sendMsg(this.state.chosenFriend, this.state.msgToSend)}
                     />
-                </ScrollView>
+                </View>
             </View>
         );
     }
@@ -193,10 +195,10 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     topContainer: {
-        flex: 0.5,
+        flex: 0.3,
     },
     middleContainer: {
-        flex: 0.1,
+        flex: 0.05,
         alignItems: 'center',
         justifyContent: 'center',
         borderTopWidth: 1,
@@ -204,7 +206,8 @@ const styles = StyleSheet.create({
         borderColor: 'white',
     },
     bottomContainer: {
-        flex: 0.4,
+        flex: 0.65,
+        justifyContent: 'flex-end'
     },
     container2: {
         flex: 1,
@@ -214,8 +217,9 @@ const styles = StyleSheet.create({
         marginRight: 16,
         marginTop: 8,
         marginBottom: 8,
-        borderColor: '#cceabb',
-        borderBottomWidth: 1,
+        borderColor: 'white',
+        borderWidth: 1,
+        borderRadius: 10
     },
     title: {
         fontSize: 16,
@@ -234,5 +238,6 @@ const styles = StyleSheet.create({
     photo: {
         height: 50,
         width: 50,
+        borderRadius: 10
     },
 });
